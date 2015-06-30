@@ -1,0 +1,80 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015, Patrick Uiterwijk <patrick@puiterwijk.org>
+# Copyright (c) 2015, Branko Grubić <bitlord0xff@gmail.com>
+# All rights reserved.
+#
+# This script is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This script is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this script.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Many thanks to Patrick Uiterwijk for initial and most important part related
+# to transliteration. ;-)
+#
+
+
+# TODO:
+# - first \msgstr\ swap "language/sr/)\n" and "Language: sr\n" for @latin
+#   variant (still unknown value for me!)
+# - omit first \msgstr\, it can contain Cyrillic names which we don't want to
+#   transliterate
+
+import sys
+
+table = {}
+
+
+def readTable(tabFile):
+    with open(tabFile, 'r') as tabl:
+        tablefile = tabl.readlines()
+        for line in tablefile:
+            line = line.replace('\n', '')
+        try:    
+                key, val = line.split(' ')
+        except ValueError as e:
+            print e
+            print "HINT: possibly table file contains extra spaces!"
+            print "arround '%s'" % key
+            print "table file contans only one space between"
+            print "first and second column 'X Y'\\n"
+            return -1
+            table[key] = val
+
+
+def transliterate(inFile):
+    with open(inFile, 'r') as inp:
+            with open('%s.lat' % inFile, 'w') as outp:
+                fle = inp.read()
+                for key in table:
+                    fle = fle.replace(key, table[key])
+                outp.write(fle)
+
+
+def main():
+    """ Table filename """
+    tabFile = 'table'
+
+    """ Check for input filename argument """
+    if len(sys.argv) < 2:
+        print 'Too few arguments\nUsage: %s <inFile>' % sys.argv[0]
+        return -1
+    inFile = str(sys.argv[1])
+
+    """ Read transtable """
+    readTable(tabFile)
+
+    """ Transliterate """
+    transliterate(inFile)
+
+if __name__ == '__main__':
+    exit(main())
