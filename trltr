@@ -38,16 +38,19 @@ def readTable(tabFile):
         tablefile = tabl.readlines()
         for line in tablefile:
             line = line.replace('\n', '')
-            try:
-                key, val = line.split(' ')
-            except ValueError as e:
-                print e
-                print "HINT: possibly table file contains extra spaces!"
-                print "arround '%s'" % key
-                print "table file contans only one space between"
-                print "first and second column 'X Y'\\n"
-                return -1
-            table[key] = val
+            if line.startswith('#'):
+                continue
+            else:
+                try:
+                    key, val = line.split(' ')
+                except ValueError as e:
+                    print e
+                    print "HINT: possibly table file contains extra spaces!"
+                    print "arround '%s'" % key
+                    print "table file contans only one space between"
+                    print "first and second column 'X Y'\\n"
+                    return -1
+                table[key] = val
 
 def transliterate(inFile):
     with open(inFile, 'r') as inp:
@@ -59,8 +62,11 @@ def transliterate(inFile):
 
 
 def main():
-    """ Table filename """
-    tabFile = 'table'
+    """ 
+    FIXME: hardcoded table name(s)
+    Table filename 
+    """
+    tabFile = 'tables/sr_cyr2lat'
 
     """ Check for input filename argument """
     if len(sys.argv) < 2:
