@@ -37,10 +37,10 @@ def readTable(tabFile):
     with open(tabFile, 'r') as tabl:
         tablefile = tabl.readlines()
         for line in tablefile:
-            line = line.replace('\n', '')
             if line.startswith('#'):
                 continue
             else:
+                line = line.replace('\n', '')
                 try:
                     key, val = line.split(' ')
                 except ValueError as e:
